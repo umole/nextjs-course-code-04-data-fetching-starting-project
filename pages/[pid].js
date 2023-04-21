@@ -21,16 +21,37 @@ export async function getStaticProps(context) {
 
     const productId = params.pid;
 
-    const filePath = path.join(__dirname, 'data', 'dummy-backend.json');
-    const JSONData = await fs.readFile(filePath);
-    const data = JSON.parse(JSONData);
+    const filePath = path.join(process.cwd(), 'data', 'dummy-backend.json');
+    try {
+        const JSONData = await fs.readFile(filePath);
+        const data = JSON.parse(JSONData);
 
-    const product = data.product.find(product => product.id === productId)
+        const product = data.products.find(product => product.id === productId)
 
+        return {
+            props: {
+                loadedProduct: product
+            }
+        };
+    } catch (error) {
+        console.error(error);
+        return {
+            notFound: true
+        };
+    }
+    
+
+   
+}
+
+export async function getStaticPaths() {
     return {
-        props: {
-            loadedProduct: product
-        }
+        paths: [
+            {params: {pid: 'p1'}},
+            {params: {pid: 'p2'}},
+            {params: {pid: 'p3'}},
+        ],
+        fallback: false
     };
 }
 
