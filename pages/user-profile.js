@@ -11,7 +11,7 @@ export default userProfile;
 export async function getServerSideProps(context) {
     return {
         props: {
-            username: Andre
+            username: 'Andre'
         }
     }
 }
