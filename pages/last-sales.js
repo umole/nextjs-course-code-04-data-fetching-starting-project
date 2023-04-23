@@ -32,7 +32,7 @@ const lastSalesPage = (props) => {
       return <p>Loading...</p>;
     }
 
-    if (!data && !sales) {
+    if (!sales || !sales.length === 0) {
       return <p>No data yet</p>
     }
     
@@ -44,29 +44,28 @@ const lastSalesPage = (props) => {
 }
 
 export async function getStaticProps() {
-  useEffect(async () => {
-    setIsLoading(true);
-    try {
-        const response = await fetch('https://nextjs-course-14f33-default-rtdb.firebaseio.com/sales.json');
-        const data = await response.json();
-        const transformedSales = [];
+  try {
+      const response = await fetch('https://nextjs-course-14f33-default-rtdb.firebaseio.com/sales.json');
+      const data = await response.json();
+      const transformedSales = [];
 
-        for (const key in data) {
-            transformedSales.push({
-              id: key,
-              username: data[key].customerName,
-              volume: data[key].purchase
-            })
-        } return {
+      for (const key in data) {
+          transformedSales.push({
+            id: key,
+            username: data[key].customerName,
+            volume: data[key].purchase
+          })
+      }
+
+      return {
           props: {
-            sales: transformedSales
+              sales: transformedSales
           },
           revalidate: 10
-        }
-    } catch (error) {
-        console.log(error);
-    }
-  }, [])
+      };
+  } catch (error) {
+      console.log(error);
+  }
 }
 
 export default lastSalesPage;
